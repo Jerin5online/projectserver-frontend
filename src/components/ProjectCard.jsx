@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import RemoveBgimg from '../Assests/Screenshot 2023-11-04 211612.png'
 import Modal from 'react-bootstrap/Modal';
+import { BASE_URL } from '../services/baseurl';
 function 
-ProjectCard() {
+ProjectCard({project}) {
               const [show, setShow] = useState(false);
               const handleClose = () => setShow(false);
               const handleShow = () => setShow(true);
@@ -11,11 +12,11 @@ ProjectCard() {
 
   return (
    <>
-   <Card style={{marginLeft:"30px",borderColor:"skyblue"}} className='btn shadow' onClick={handleShow}>
-    <Card.Img  variant='top' src={RemoveBgimg}/>
+   <Card  style={{borderColor:"skyblue",width:"18rem"}} className='btn shadow mt-5' onClick={handleShow}>
+    <Card.Img  variant='top'  height={"250px"} src={project?`${BASE_URL}/uploads/${project.projectimage}`:RemoveBgimg}/>
           <Card.Body>
-              
-              <Card.Title className='text-center'>N E T F L I X</Card.Title>
+            
+              <Card.Title className='text-center'>{project.title}</Card.Title>
               
               </Card.Body>    
               
@@ -31,27 +32,28 @@ ProjectCard() {
         size='lg'
       >
         <Modal.Header closeButton>
-          <Modal.Title>N E T F L I X</Modal.Title>
+          <Modal.Title>{project.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body >
          <Row style={{height:"200px"}}>
               <Col md={6}>
 
-              <img src={RemoveBgimg} width={"100%"} alt="" />
+              <img src={project?`${BASE_URL}/uploads/${project.projectimage}`:RemoveBgimg} width={"100%"} alt="" />
 
 
               </Col>
               <Col md={6}>
-             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos esse earum corporis. Quos repellat veritatis quis. Unde necessitatibus,</p>
-             <p><span className='fw-bolder'>Technologies Used : </span>HTML, CSS, REACT</p>
+                <h4>Discription</h4>
+             <p>{project.overview}</p>
+             <p><span className='fw-bolder'>Technologies Used : </span>{project.language}</p>
               </Col>
 
 
          </Row>
 
               <div className='d-flex'>
-              <a href="https://github.com/Jerin5online/netflix" target='_blank'><i class="fa-brands fa-github text-white fa-2x ms-5 mt-3"></i></a>
-               <a href="https://jerinnetflix.vercel.app/" target='_blank'><i class="fa-solid fa-link fa-2x ms-5 mt-3 text-white "></i></a>
+              <a href={project.github} target='_blank'><i class="fa-brands fa-github text-white fa-2x ms-5 mt-3"></i></a>
+               <a href={project.website} target='_blank'><i class="fa-solid fa-link fa-2x ms-5 mt-3 text-white "></i></a>
 
 
 

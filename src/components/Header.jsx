@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { isAuthTokenContext } from '../contexts/ContextShare';
 
 function Header({dashboard}) {
+  const {isAuthToken,setIsAuthToken} = useContext(isAuthTokenContext)
+
+  const navigate = useNavigate()
+
+const handleLogout = () =>{
+  sessionStorage.removeItem("token")
+  sessionStorage.removeItem("existingUser")
+  setIsAuthToken(false)
+  //navigate to homepage
+  navigate('/')
+}
+
   return (
     <Navbar className='bg-white'>
     <Container>
@@ -13,7 +26,8 @@ function Header({dashboard}) {
       </Navbar.Brand>
       {
         dashboard && 
-<button type="button" class="btn  btn-outline-info text-dark">Logout <i class="fa-solid fa-power-off text-dark "></i> </button>      }
+        <button onClick={handleLogout} type="button" class="btn  btn-outline-info text-dark">Logout <i class="fa-solid fa-power-off text-dark "></i> </button> 
+    }
     </Container>
   </Navbar>
     

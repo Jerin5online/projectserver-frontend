@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import lgpic from "../Assests/20602935_6333204-removebg-preview.png";
 import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../services/allAPI";
 import Swal from "sweetalert2";
+import { isAuthTokenContext } from "../contexts/ContextShare";
 
 function Auth({ register }) {
+
+  const {isAuthToken,setIsAuthToken} = useContext(isAuthTokenContext)
   //create a state to ghold the value of ser registration details
 
   const [userData, setUserData] = useState({
@@ -78,6 +81,7 @@ function Auth({ register }) {
           text: `${result.data.existingUser.username} is succesfully Logined`,
           icon: "success",
         }); 
+        setIsAuthToken(true)
 
         //store
 

@@ -1,23 +1,29 @@
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Row,Col } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { addProjectAPI } from '../services/allAPI';
+import { addProjectResponseContext } from '../contexts/ContextShare';
 
 
 function AddProject() {
+  const {addProjectResponse,setAddProjectResponse}= useContext(addProjectResponseContext)
+
+  //to hold the value of the image URL
 
   const[preview,setPreview] = useState("")
+
+  
 
   const[projectdetails,setProjectDetails] = useState({
     title:"",
     language:"",
-    githublink:"",
-    websitelink:"",
+    github:"",
+    website:"",
     overview:"",
-    projectImg:""
+    projectimage:""
 
   });
   console.log(projectdetails);
@@ -33,19 +39,19 @@ function AddProject() {
    setProjectDetails({
     title:"",
    language:"",
-   githublink:"",
-   websitelink:"",
+   github:"",
+   website:"",
    overview:"",
-   projectImg:""}) 
+   projectimage:""}) 
 
    setPreview("")
   }
  useEffect(()=>{
-  if (projectdetails.projectImg) {
-    setPreview(URL.createObjectURL(projectdetails.projectImg))
+  if (projectdetails.projectimage) {
+    setPreview(URL.createObjectURL(projectdetails.projectimage))
   }
   
- },[projectdetails.projectImg])
+ },[projectdetails.projectimage])
  console.log(preview);
 
  useEffect(()=>{
@@ -61,9 +67,9 @@ function AddProject() {
 
  const handleAdd = async(e)=>{
   e.preventDefault()
-  const{title,language,githublink,websitelink,overview,projectImg} = projectdetails
+  const{title,language,github,website,overview,projectimage} = projectdetails
 
-  if(!title || !language || !githublink || !websitelink || !overview || !projectImg){
+  if(!title || !language || !github || !website || !overview || !projectimage){
     Swal.fire({
       title: "Please fill in the form Completly",
       icon: "error",
@@ -78,17 +84,34 @@ function AddProject() {
 
     reqBody.append("title",title)
     reqBody.append("language",language)
-    reqBody.append("githublink",githublink)
-    reqBody.append("websitelink",websitelink)
+    reqBody.append("github",github)
+    reqBody.append("website",website)
     reqBody.append("overview",overview)
-    reqBody.append("projectImg",projectImg)
+    reqBody.append("projectimage",projectimage)
 
   if(token) {const reqHeader = {
     "Content-Type" : "multipart/form-data",
-    "Authorization" :`Bearer" ${token}`
+    "Authorization" :`Bearer ${token}`
    }
    const result = await addProjectAPI(reqBody,reqHeader)
    console.log(result);
+   if(result.status===200){
+   console.log(result.data);
+   Swal.fire({
+    title: "Succesfully ADDED !",
+    icon: "success",
+  });  
+  handleClose1()
+  handleClose()
+  setAddProjectResponse(result.data)
+   }
+   else{
+    Swal.fire({
+      title: result.response.data,
+      icon: "error",
+    });
+     console.log(result.response.data);
+   }
   }
 }
  }
@@ -112,7 +135,7 @@ function AddProject() {
               <Row>
                 <Col md={6}>
                     <label htmlFor="image" className='text-center'>
-                        <input id='image' style={{display:'none'}} type='file' onChange={(e)=>setProjectDetails({...projectdetails,projectImg:e.target.files[0]})} />
+                        <input id='image' style={{display:'none'}} type='file' onChange={(e)=>setProjectDetails({...projectdetails,projectimage:e.target.files[0]})} />
                         <img className='w-100' src={preview?preview:"https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX60212294.jpg"} alt=""  />
                     </label>
                 </Col>
@@ -126,11 +149,11 @@ function AddProject() {
                      </div>
     
                      <div className='mb-3 w-100'>
-                        <input type="text" className='form-control' placeholder='Project Github Link  '  value={projectdetails.githublink} onChange={(e)=>setProjectDetails({...projectdetails,githublink:e.target.value})}  />
+                        <input type="text" className='form-control' placeholder='Project Github Link  '  value={projectdetails.github} onChange={(e)=>setProjectDetails({...projectdetails,github:e.target.value})}  />
                      </div>
     
                      <div className='mb-3 w-100'>
-                        <input type="text" className='form-control' placeholder='Project Website Link '  value={projectdetails.websitelink} onChange={(e)=>setProjectDetails({...projectdetails,websitelink:e.target.value})} />
+                        <input type="text" className='form-control' placeholder='Project Website Link '  value={projectdetails.website} onChange={(e)=>setProjectDetails({...projectdetails,website:e.target.value})} />
                      </div>
     
                      <div className='mb-3 w-100'>
